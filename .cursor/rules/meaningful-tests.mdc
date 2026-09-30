@@ -1,0 +1,20 @@
+---
+description: Require tests that assert observable behavior
+alwaysApply: true
+---
+
+# Meaningful tests
+
+A behavior change is incomplete until a test fails on the old behavior and passes on the new one. Assert an outcome: HTTP status and body, a `tenant_id` row, a policy reason, or a UI state.
+
+Ship these with the feature: tenant isolation, TPO gate, wrong password and lockout, policy rejection reason, and one UI flow (login, apply, or approve).
+
+Reject `expect(true).toBe(true)`, empty tests, "did not throw", snapshot-only tests, mocking the unit under test, production calls, and real secrets.
+
+```ts
+// BAD
+expect(true).toBe(true);
+// GOOD
+expect(res.status).toBe(404);
+expect(res.body.error).toBe("job_not_visible");
+```
