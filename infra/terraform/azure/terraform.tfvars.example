@@ -1,0 +1,3 @@
+resource_group_name     = "campus-job-portal-dev"
+location                = "centralindia"
+postgres_admin_password = "change-me"
