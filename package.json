@@ -1,0 +1,21 @@
+{
+  "name": "campus-job-portal",
+  "private": true,
+  "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "npm run dev -w api & npm run dev -w web",
+    "migrate": "npm run migrate -w api",
+    "seed": "npm run seed -w api",
+    "test": "npm run test -w api && npm run test -w web",
+    "lint": "eslint .",
+    "typecheck": "npm run typecheck -w api && npm run typecheck -w web && npm run typecheck -w @campus/shared",
+    "openapi:check": "npm run openapi:check -w api",
+    "local": "tsx scripts/local.ts"
+  },
+  "devDependencies": {
+    "eslint": "^9.24.0",
+    "typescript-eslint": "^8.29.1"
+  },
+  "engines": { "node": ">=20" }
+}
