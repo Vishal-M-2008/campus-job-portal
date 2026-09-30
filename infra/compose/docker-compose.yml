@@ -1,0 +1,91 @@
+services:
+  traefik:
+    image: traefik:v3.3
+    command:
+      - --api.insecure=false
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      POSTGRES_DB: campus
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d campus"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  mailpit:
+    image: axllent/mailpit:v1.24
+    ports:
+      - "8025:8025"
+
+  api:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-change-me}@postgres:5432/campus
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:-change-me}
+      MAIL_MODE: smtp
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_FROM: portal@example.com
+      PORT: 3001
+      UPLOAD_DIR: /data/uploads
+      WEB_ORIGIN: http://localhost
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=PathPrefix(`/api`)
+      - traefik.http.routers.api.entrypoints=web
+      - traefik.http.services.api.loadbalancer.server.port=3001
+
+  web:
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+    depends_on:
+      - api
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.web.rule=PathPrefix(`/`)
+      - traefik.http.routers.web.entrypoints=web
+      - traefik.http.services.web.loadbalancer.server.port=80
+      - traefik.http.routers.web.priority=1
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["scale"]
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    profiles: ["scale"]
+    command: ["npx", "tsx", "src/worker.ts"]
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-change-me}@postgres:5432/campus
+      REDIS_URL: redis://redis:6379
+      PASSWORD_PEPPER: ${PASSWORD_PEPPER:-change-me}
+    depends_on:
+      - redis
+      - postgres
+
+volumes:
+  pgdata:
+  uploads:
