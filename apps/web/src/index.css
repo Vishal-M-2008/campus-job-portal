@@ -1,0 +1,4 @@
+@import "tailwindcss";
+@import "../../../packages/ui/theme.css";
+
+#root { min-height: 100vh; }

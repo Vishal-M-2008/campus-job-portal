@@ -1,0 +1,9 @@
+{
+  "name": "Campus Job Portal",
+  "short_name": "Placements",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6efe6",
+  "theme_color": "#c2410c",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
