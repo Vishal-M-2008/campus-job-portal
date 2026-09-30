@@ -1,0 +1,26 @@
+name: deploy-prod
+
+on:
+  workflow_dispatch:
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Terraform plan
+        working-directory: infra/terraform/azure
+        env:
+          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+        run: |
+          if [ -z "$ARM_CLIENT_ID" ]; then
+            echo "Azure credentials are not configured. Skipping plan."
+            exit 0
+          fi
+          terraform init
+          terraform plan -var-file=terraform.tfvars
