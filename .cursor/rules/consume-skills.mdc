@@ -1,0 +1,24 @@
+---
+description: Read the matching project skill before implementing a technology
+alwaysApply: true
+---
+
+# Consume project skills
+
+Before editing, read `.cursor/skills/<name>/SKILL.md` for the area you are changing. The repo copy and the workspace copy match.
+
+- React, shadcn, Tailwind, PWA, i18n, theme: `react-shadcn-pwa`
+- Redux or sagas: `redux-saga`
+- Express routes or middleware: `express-rest`
+- Knex, migrations, seeds: `knex-postgres`
+- Login, sessions, passwords: `auth-security`
+- Compose, Docker, Traefik: `docker-traefik`
+- Terraform, Kubernetes, Azure: `azure-k8s-terraform`
+- Email: `smtp-email`
+- Tests or CI: `testing-ci`
+- D3 dashboards: `d3-analytics`
+
+```text
+BAD: add a migration without reading knex-postgres
+GOOD: read the skill, then add a timestamped migration
+```

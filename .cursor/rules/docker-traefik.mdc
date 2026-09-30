@@ -1,0 +1,21 @@
+---
+description: Docker Compose services and Traefik routes
+globs: "**/Dockerfile,**/compose*.yml,infra/compose/**"
+alwaysApply: false
+---
+
+# Docker and Traefik
+
+One process per container: `web`, `api`, `postgres`, Traefik, Mailpit. Traefik routes `/api` to the API and `/` to the web app.
+
+Do not bake secrets into images. Pass them with env files that are gitignored. Health checks hit `/api/v1/health` and the web root.
+
+```yaml
+# BAD
+image: api
+environment:
+  DATABASE_URL: postgres://user:real-secret@db/app
+# GOOD
+environment:
+  DATABASE_URL: ${DATABASE_URL}
+```

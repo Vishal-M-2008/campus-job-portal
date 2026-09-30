@@ -1,0 +1,19 @@
+---
+description: Knex migrations, seeds, and tenant_id columns
+globs: "**/migrations/**,**/seeds/**,**/knexfile.*"
+alwaysApply: false
+---
+
+# Knex SQL
+
+Add schema only as `YYYYMMDDHHMMSS_short_name.js` under `apps/api/migrations`. College-scoped tables include `tenant_id` not null and index `(tenant_id, id)`.
+
+Use Knex bindings. Production only moves forward: fix a bad migration with a new file. `migrate:rollback` is local and CI only.
+
+```js
+// BAD
+table.string("email");
+// GOOD
+table.uuid("id").primary();
+table.uuid("tenant_id").notNullable().index();
+```

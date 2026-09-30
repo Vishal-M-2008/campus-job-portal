@@ -1,0 +1,19 @@
+---
+description: Campus Job Portal product constraints for every task
+alwaysApply: true
+---
+
+# Product context
+
+Multi-college SaaS. Every college-scoped row has `tenant_id`. Students see a job only after TPO approval.
+
+- Auth now is email and password. SSO is later.
+- No in-app chat, SMS, or WhatsApp. Email only.
+- No built-in aptitude or coding tests.
+- Schema changes go through Knex migrations only. No ORM.
+- Feature flags `ai`, `analytics`, `extra_seats`, `branding` stay enabled and free until billing is turned on. Do not charge.
+
+```text
+BAD: student query without tenant_id
+GOOD: where({ tenant_id: req.tenantId, id })
+```

@@ -1,0 +1,20 @@
+---
+description: React PWA UI with shadcn, Tailwind, and theme tokens
+globs: apps/web/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# React frontend
+
+Use function components. Route with react-router-dom. Style with Tailwind and shadcn components in `packages/ui` or `apps/web/src/components/ui`.
+
+Colors come from CSS variables (`--primary`, `--background`). Do not hardcode a second palette. Copy comes from `src/locales/en/*.json`.
+
+PWA: keep `manifest.webmanifest` and the app shell. Do not add push notifications.
+
+```tsx
+// BAD
+<button style={{ background: "red" }}>Save</button>
+// GOOD
+<Button type="submit">{t("save")}</Button>
+```

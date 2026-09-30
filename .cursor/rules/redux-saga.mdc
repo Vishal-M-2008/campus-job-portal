@@ -1,0 +1,18 @@
+---
+description: Redux slices and sagas for API, upload, and import
+globs: apps/web/**/*saga*,apps/web/**/store/**
+alwaysApply: false
+---
+
+# Redux saga
+
+Components dispatch actions. Sagas call the API. Keep loading and error on the slice.
+
+Do not `fetch` inside a component. Upload and college import run in sagas.
+
+```ts
+// BAD
+const jobs = await fetch("/api/v1/jobs");
+// GOOD
+dispatch(jobsRequested({ status: "approved" }));
+```

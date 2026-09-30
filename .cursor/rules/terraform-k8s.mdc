@@ -1,0 +1,25 @@
+---
+description: Azure-first Terraform and Kubernetes migrate-before-API
+globs: "**/*.tf,infra/k8s/**"
+alwaysApply: false
+---
+
+# Terraform and Kubernetes
+
+Azure is the first cloud. Keep module names `vpc`, `k8s`, `postgres`, `object_storage`, `secrets` so AWS can match later.
+
+A Kubernetes Job runs `knex migrate:latest` and must finish before the API deployment rolls out. Do not put secret values in manifests. Reference Key Vault or Kubernetes secrets by name.
+
+```yaml
+# BAD
+env:
+  - name: DATABASE_URL
+    value: postgres://app:hunter2@db/app
+# GOOD
+env:
+  - name: DATABASE_URL
+    valueFrom:
+      secretKeyRef:
+        name: api-secrets
+        key: DATABASE_URL
+```

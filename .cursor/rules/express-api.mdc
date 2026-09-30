@@ -1,0 +1,18 @@
+---
+description: Express REST conventions, RBAC, and tenant checks
+globs: apps/api/**/*.ts
+alwaysApply: false
+---
+
+# Express API
+
+Mount routes at `/api/v1`. Validate bodies with Zod. Middleware order: request id, pino, helmet, cors, rate limit, cookie, csrf, routes, error handler.
+
+Every college query filters `tenant_id` from the session. `requireRole` guards the route. Super-admin is the only cross-tenant path.
+
+```ts
+// BAD
+db("jobs").where({ id });
+// GOOD
+db("jobs").where({ id, tenant_id: req.tenantId });
+```
